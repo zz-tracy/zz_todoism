@@ -127,16 +127,19 @@ def register_errors(app):
 
 
 def register_commands(app):
-    @app.cli.command()
+    @app.cli.command()  # 注册为命令
+    # 设置选项,使用click提供的option装饰器为命令添加了一个--drop选项, 将is_flag参数设为True可以将这个选项声明为布尔值标志(booleanflag)
     @click.option('--drop', is_flag=True, help='Create after drop.')
+    # --drop选项的值作为drop参数传入命令函数，如果提供了这个选项，那么drop的值将是True，否则为False。
     def initdb(drop):
         """Initialize the database."""  # 初始化数据库
-        if drop:
+        if drop:  # 判断是否输入了选项
+            # 因为添加—drop选项会直接清空数据库内容,可以通过click.confirm()函数添加一个确认提示，这样只有输入y或yes才会继续执行操作。
             click.confirm('This operation will delete the database, do you want to continue?', abort=True)
-            db.drop_all()
+            db.drop_all()  # 对数据库对象调用drop_all()方法清空数据库内容(包含数据和表结构)
             click.echo('Drop tables.')
-        db.create_all()
-        click.echo('Initialized database.')
+        db.create_all()  # 对数据库对象调用create_all()方法创建数据库表
+        click.echo('Initialized database.')  # 输出提示信息复制代码
 
     # 使用app.cli.group()装饰器创建一个命令组,用来组织一系列翻译命令,其内容为空
     @app.cli.group()

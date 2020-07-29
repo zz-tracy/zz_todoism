@@ -15,6 +15,7 @@ from todoism.extensions import db
 
 # 创建User模型类，用来存储用户，用户和条目之间建立一对多关系
 class User(db.Model, UserMixin):
+    # print('----', '测试断点1')
     id = db.Column(db.Integer, primary_key=True)    # 主键字段
     username = db.Column(db.String(20), unique=True, index=True)    # 用户字段
     password_hash = db.Column(db.String(128))    # 密码散列值字段
@@ -34,6 +35,7 @@ class User(db.Model, UserMixin):
 
 # 创建Item模型类,用来存储待办条目,用户和条目之间建立一对多关系
 class Item(db.Model):
+    # print('----', '测试断点2')
     id = db.Column(db.Integer, primary_key=True)     # 主键字段
     body = db.Column(db.Text)    # 主体字段
     done = db.Column(db.Boolean, default=False)    # 完成字段
@@ -43,7 +45,7 @@ class Item(db.Model):
 
 
 class SysUser(db.Model):
-    # print('----', '测试断点10')
+    # print('----', '测试断点3')
     """用户表"""
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, comment='主键')
@@ -78,7 +80,7 @@ class SysUser(db.Model):
 
 
 class Role(db.Model):
-    # print('----', '测试断点3')
+    # print('----', '测试断点4')
     """角色表"""
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False, comment='主键')
@@ -97,7 +99,7 @@ class Role(db.Model):
 
 
 class Permission(db.Model):
-    # print('----', '测试断点4')
+    # print('----', '测试断点5')
     """权限表"""
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, comment='主键')
@@ -187,7 +189,7 @@ class Permission(db.Model):
 
 
 class UserGroup(db.Model):
-    # print('----', '测试断点5')
+    # print('----', '测试断点6')
     """用户组表"""
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -208,7 +210,7 @@ class UserGroup(db.Model):
 
 
 class RolePermissionRelation(db.Model):
-    # print('----', '测试断点6')
+    # print('----', '测试断点7')
     """角色权限关联表"""
     # __tablename__ = 'sys_role_permission_relation'
     # __table_args__ =({'comment': '角色权限关联表'})
@@ -221,7 +223,7 @@ class RolePermissionRelation(db.Model):
 
 
 class UserRoleRelation(db.Model):
-    # print('----', '测试断点7')
+    # print('----', '测试断点8')
     """用户角色关联表"""
     # __tablename__ = "sys_user_role_relation"
     # __table_args__ = ({'comment': '用户角色关联表'})
@@ -234,7 +236,7 @@ class UserRoleRelation(db.Model):
 
 
 class UserGroupRoleRelation(db.Model):
-    # print('----', '测试断点8')
+    # print('----', '测试断点9')
     """用户组角色关联表"""
     # __tablename__ = "sys_user_group_role_relation"
     # __table_args__ = ({'comment': '用户组与角色关联表'})
@@ -247,7 +249,7 @@ class UserGroupRoleRelation(db.Model):
 
 
 class UserGroupRelation(db.Model):
-    # print('----', '测试断点9')
+    # print('----', '测试断点10')
     """用户用户组关联表"""
     # __tablename__ = 'sys_user_group_relation'
     # __table_args__ = ({'comment': '用户用户组关联表'})
