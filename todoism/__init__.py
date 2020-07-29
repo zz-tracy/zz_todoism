@@ -137,7 +137,7 @@ def register_commands(app):
             # 因为添加—drop选项会直接清空数据库内容,可以通过click.confirm()函数添加一个确认提示，这样只有输入y或yes才会继续执行操作。
             click.confirm('This operation will delete the database, do you want to continue?', abort=True)
             db.drop_all()  # 对数据库对象调用drop_all()方法清空数据库内容(包含数据和表结构)
-            click.echo('Drop tables.')
+            click.echo('Drop tables.')    # 输出提示消息
         db.create_all()  # 对数据库对象调用create_all()方法创建数据库表
         click.echo('Initialized database.')  # 输出提示信息复制代码
 
