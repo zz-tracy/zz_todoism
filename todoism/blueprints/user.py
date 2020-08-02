@@ -176,3 +176,4 @@ def user_clear():
     # db.session.delete()
     db.session.commit()
     return jsonify(code=200, message='ok')
+
