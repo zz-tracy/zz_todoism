@@ -52,7 +52,7 @@ class SysUser(db.Model):
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, comment='主键')
     # 所属用户组
-    # user_group_id = db.Column(db.Integer, nullable=False, comment='所属用户组')
+    user_group_id = db.Column(db.Integer, nullable=False, comment='所属用户组')
     # 用户名
     username = db.Column(db.String(64), nullable=False, comment='用户名')
     # 密码
