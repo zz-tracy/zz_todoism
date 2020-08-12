@@ -31,6 +31,14 @@ def new_user():
     if data['username'] is None or data['username'].strip() == '':
         return jsonify(message=_('Invalid user data.')), 400
 
+    #  通过filter()过滤方法查询username字段对应的记录
+    # username = SysUser.query.filter(SysUser.username == data['username']).first()
+    # 通过filter_by过滤方法查询username对应的记录
+    username = SysUser.query.filter_by(username=data['username']).first()
+
+    # print('----', username)
+    if username is not None:
+        return jsonify(message=_('The user name already exists.')), 404
     sys_user = SysUser(
         user_group_id=data['user_group_id'], username=data['username'], password=data['password'], salt=data['salt'],
         name=data['name'], phone=data['phone'], email=data['email'], creat_id=data['creat_id'],
@@ -56,6 +64,11 @@ def new1_user():
     update_id = request.form.get('update_id')
     last_login_time = request.form.get('last_login_time')
     login_count = request.form.get('login_count')
+
+    username = SysUser.query.filter_by(username=username).first()
+    # print('----', username)
+    if username is not None:
+        return jsonify('The user name already exists.'), 404
 
     sys_user = SysUser(
         user_group_id=user_group_id, username=username, password=password, salt=salt,
@@ -86,8 +99,6 @@ def new1_user():
 @user_bp.route('/user/<int:user_id>/edit1', methods=['PUT'])
 @login_required
 def edit1_user(user_id):
-    # if user_id is None:
-    #     return jsonify(message='Invalid user id.'), 404
     user = SysUser.query.get(user_id)
     # if current_user != user.author:
     #     return jsonify(message=_('Permission denied.')), 403
@@ -100,10 +111,13 @@ def edit1_user(user_id):
     if data is None or data['name'].strip() == '':
         return jsonify(message=_('Invalid user name.')), 400
 
+    # 通过len()方法对用户输入的name值的字符长度的最大值及最小值进行判断
+    if 10 > len(data['name']) > 64:
+        return jsonify(message=_('The user name is too long.')), 401
+
     user.name = data['name']
     db.session.commit()
     return jsonify(code=200, message='ok', data=data['name'])
-    # return jsonify(message=_('SysUser updated.'))
 
 
 # 注册编辑用户静态路由
@@ -117,15 +131,17 @@ def edit2_user():
 
     data = request.get_json()
     # print('----', data)
-    if data is None or data['name'].strip() == '':
+    if data is None \
+            or data['name'].strip() == '' \
+            or 10 > len(data['name']) > 64:
         return jsonify(message=_('Invalid user name.')), 400
+
     user = SysUser.query.get(data['id'])
     if user is None:
         return jsonify(message=_('Invalid user id.')), 404
     user.name = data['name']
     db.session.commit()
     return jsonify(code=200, message='ok', data=data)
-    # return jsonify(message=_('SysUser updated.'))
 
 
 # 使用request.form.get()方法获取参数
@@ -143,13 +159,14 @@ def edit3_user(user_id):
 
     name = request.form.get('name')
     # print('----', name)
-    if name is None or name.strip() == '':
+    if name is None \
+            or name.strip() == '' \
+            or 10 > len(name) > 64:
         return jsonify(message=_('Invalid user name.')), 400
 
     user.name = name
     db.session.commit()
     return jsonify(code=200, message='ok', data=name)
-    # return jsonify(message=_('SysUser updated.'))
 
 
 # 通过request.form.get()获取id
@@ -160,7 +177,9 @@ def edit4_user():
     user_id = request.form.get('id')
     # print('----',  name)
     # print('----', id)
-    if name is None or name.strip() == '':
+    if name is None \
+            or name.strip() == '' \
+            or 10 > len(name) > 64:
         return jsonify(message=_('Invalid user name.')), 400
 
     user = SysUser.query.get(user_id)
@@ -255,10 +274,28 @@ def user_clear1():
     return jsonify(code=200, message='ok')
 
 
-# 注册批量清空路由
-@user_bp.route('/user/clear2', methods=['DELETE'])
+# 注册根据ids参数传递的id值进行批量删除
+@user_bp.route('user/clear2', methods=['DELETE'])
 @login_required
 def user_clear2():
+    # 通过id列表删除指定id的条目
+    data = request.get_json()
+    ids = data['ids']
+    if data is None or data['ids'] == '':
+        return jsonify(meeage=_('Invalid data.')), 400
+
+    for item in ids:
+        user = SysUser.query.filter_by(id=item).first()
+        db.session.delete(user)
+
+    db.session.commit()
+    return jsonify(code=200, message='ok')
+
+
+# 注册批量清空路由
+@user_bp.route('/user/clear3', methods=['DELETE'])
+@login_required
+def user_clear3():
     SysUser.query.delete()
     db.session.commit()
     return jsonify(code=200, message='ok')
