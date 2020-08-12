@@ -15,6 +15,7 @@ from sqlalchemy import text
 
 from todoism.extensions import db
 
+
 # 创建User模型类，用来存储用户，用户和条目之间建立一对多关系
 class User(db.Model, UserMixin):
     # print('----', '测试断点1')
@@ -51,6 +52,8 @@ class SysUser(db.Model):
     """用户表"""
     # 主键
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, comment='主键')
+    # 性别
+    gender = db.Column(db.String(5), nullable=False, comment='性别')
     # 所属用户组
     user_group_id = db.Column(db.Integer, nullable=False, comment='所属用户组')
     # 用户名
@@ -114,9 +117,9 @@ class Permission(db.Model):
     # 权限描述
     description = db.Column(db.String(128), comment='权限描述')
     # 创建时间
-    creat_time = db.Column(db.DateTime, comment='创建时间')
+    creat_time = db.Column(db.DateTime, comment='创建时间', default=datetime.now)
     # 更新时间
-    update_time = db.Column(db.DateTime, comment='更新时间')
+    update_time = db.Column(db.DateTime, comment='更新时间', default=datetime.now)
     # 创建人
     creat_id = db.Column(db.Integer, comment='创建人')
     # 更新人
