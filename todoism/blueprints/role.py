@@ -15,7 +15,7 @@ from todoism.extensions import db
 from todoism.models import Role
 
 role_bp = Blueprint('role', __name__)
-print('----', __name__)
+# print('----', __name__)
 
 
 # 注册增加角色路由

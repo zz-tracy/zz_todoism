@@ -18,6 +18,9 @@ from todoism.apis.v1 import api_v1
 from todoism.blueprints.auth import auth_bp
 from todoism.blueprints.home import home_bp
 from todoism.blueprints.todo import todo_bp
+from todoism.blueprints.user import user_bp
+from todoism.blueprints.permission import permission_bp
+from todoism.blueprints.role import role_bp
 from todoism.extensions import db, login_manager, csrf, babel
 from todoism.models import User, Item
 from todoism.settings import config
@@ -61,6 +64,7 @@ def register_extensions(app):
     # babel是来实现程序的国际化和本地化;完成flask扩展的初始化安装
     babel.init_app(app)
 
+
 def register_blueprints(app):
     @app.before_request
     def before_request():
@@ -69,6 +73,9 @@ def register_blueprints(app):
     app.register_blueprint(auth_bp)    # 使用register_blueprint()方法将auth_bp蓝本注册到程序实例上
     app.register_blueprint(todo_bp)    # 使用register_blueprint()方法将todo__bp蓝本注册到程序实例上
     app.register_blueprint(home_bp)    # 使用register_blueprint()方法将home_bp蓝本注册到程序实例上
+    app.register_blueprint(user_bp)    # 使用register_blueprint()方法将user_bp蓝本注册到程序实例上
+    app.register_blueprint(permission_bp)    # 使用register_blueprint()方法将permission_bp蓝本注册到程序实例上
+    app.register_blueprint(role_bp)    # 使用register_blueprint()方法将role_bp蓝本注册到程序实例上
     # 使用register_blueprint()方法将api_v1蓝本注册到程序实例上,其中第一个参数为蓝本名称,
     # 第二个参数为api_v1蓝本下的视图的URL前都会添加一个/api/v1前缀
     app.register_blueprint(api_v1, url_prefix='/api/v1')

@@ -8,14 +8,18 @@
 
     : 用户接口
 """
-from flask import render_template, request,Blueprint, jsonify
+from flask import render_template, request, Blueprint, jsonify
 from flask_babel import _
 from flask_login import current_user, login_required
+from sqlalchemy import and_
+from sqlalchemy import or_
 
 from todoism.extensions import db
 from todoism.models import SysUser
 
 user_bp = Blueprint('user', __name__)
+
+
 # print('----', __name__)
 # print('----', '测试断点1')
 
@@ -39,10 +43,12 @@ def new_user():
     # print('----', username)
     if username is not None:
         return jsonify(message=_('The user name already exists.')), 404
+
     sys_user = SysUser(
-        user_group_id=data['user_group_id'], username=data['username'], password=data['password'], salt=data['salt'],
-        name=data['name'], phone=data['phone'], email=data['email'], creat_id=data['creat_id'],
-        update_id=data['update_id'], last_login_time=data['last_login_time'], login_count=data['login_count']
+        gender=data['gender'], user_group_id=data['user_group_id'], username=data['username'],
+        password=data['password'], salt=data['salt'], name=data['name'], phone=data['phone'], email=data['email'],
+        creat_id=data['creat_id'], update_id=data['update_id'], last_login_time=data['last_login_time'],
+        login_count=data['login_count']
     )
     db.session.add(sys_user)
     db.session.commit()
@@ -192,13 +198,13 @@ def edit4_user():
 
 
 # 注册查询路由
-@user_bp.route('/user', methods=['POST'])
+@user_bp.route('/user1', methods=['POST'])
 @login_required
-def query_user():
+def query_user1():
     users = SysUser.query.all()
     data = []
     for user in users:
-        item = {
+        item1 = {
             'user_group_id': user.id,
             'username': user.username,
             'password': user.password,
@@ -211,8 +217,102 @@ def query_user():
             'last_login_time': user.last_login_time,
             'login_count': user.login_count
         }
-        data.append(item)
+        data.append(item1)
     return jsonify(code=200, message='ok', data=data)
+
+
+# 使用filter()方法注册查询路由
+@user_bp.route('/user2', methods=['POST'])
+@login_required
+def query_user2():
+    data = request.get_json()
+    # # print('----', data)
+    # # print('----', data['name'])
+    # if data is None \
+    #         or data['name'].strip() == '':
+    #     return jsonify(message=_('Invalid data.')), 400
+
+    # 使用filter()过滤方法及"=="查询操作符进行查询
+    # users = SysUser.query.filter(SysUser.name == data['name']).first()
+    # # print('----', users)
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 使用filter()过滤方法及'!='查询操作符进行查询
+    # users = SysUser.query.filter(SysUser.name != data['name']).first()
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 使用filter()过滤方法及'like'查询操作符进行查询
+    # users = SysUser.query.filter(SysUser.name.like('%哈哈%')).first()
+    # # print('----', users)
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 使用filter()过滤方法及'in'查询操作符进行查询
+    # users = SysUser.query.filter(SysUser.name.in_(['呵呵', '啦啦', '哈哈', '嘻嘻'])).all()
+    # print('----', users)
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 使用filter()过滤方法及'not in'查询操作符进行查询
+    # users = SysUser.query.filter(SysUser.name.notin_(['呵呵', '啦啦', '哈哈'])).all()
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 使用and_()
+    # users = SysUser.query.filter(and_(SysUser.name == '嘻嘻', SysUser.username == '绝地求生')).all()
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 在filter()中加入多个表达式,使用逗号分隔,表示表示同时满足两个表达式的数据
+    # users = SysUser.query.filter(SysUser.name == '嘻嘻', SysUser.username == '刺激战场').all()
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 在filter()方法中叠加调用多个filter()方法
+    # users = SysUser.query.filter(SysUser.name == '哈哈').filter(SysUser.username == '炫舞').all()
+    # if users is None:
+    #     return jsonify(message=_('Invalid users.')), 404
+
+    # 在filter()方法中使用or_()
+    users = SysUser.query.filter(or_(SysUser.name == data['name'], SysUser.username == data['username'])).all()
+    print('----', users)
+    if users is None:
+        return jsonify(message=_('Invalid users.')), 404
+
+    items = []
+    for user in users:
+        item2 = {
+            "gender": user.gender,
+            'user_group_id': user.id,
+            'username': user.username,
+            'password': user.password,
+            'salt': user.salt,
+            'name': user.name,
+            'phone': user.phone,
+            'email': user.email,
+            'creat_id': user.creat_id,
+            'update_id': user.update_id,
+            'last_login_time': user.last_login_time,
+            'login_count': user.login_count
+        }
+        items.append(item2)
+    # item2 = {
+    #         'gender': users.gender,
+    #         'user_group_id': users.id,
+    #         'username': users.username,
+    #         'password': users.password,
+    #         'salt': users.salt,
+    #         'name': users.name,
+    #         'phone': users.phone,
+    #         'email': users.email,
+    #         'creat_id': users.creat_id,
+    #         'update_id': users.update_id,
+    #         'last_login_time': users.last_login_time,
+    #         'login_count': users.login_count
+    #     }
+    return jsonify(code=200, message='ok', data=items)
 
 
 # 注册删除单个用户路由
@@ -275,7 +375,7 @@ def user_clear1():
 
 
 # 注册根据ids参数传递的id值进行批量删除
-@user_bp.route('user/clear2', methods=['DELETE'])
+@user_bp.route('/user/clear2', methods=['DELETE'])
 @login_required
 def user_clear2():
     # 通过id列表删除指定id的条目
@@ -299,4 +399,3 @@ def user_clear3():
     SysUser.query.delete()
     db.session.commit()
     return jsonify(code=200, message='ok')
-

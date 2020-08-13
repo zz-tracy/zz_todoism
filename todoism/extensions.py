@@ -29,11 +29,13 @@ login_manager = LoginManager()    # 实例化登录管理器
 login_manager.login_view = 'auth.login'    # 认证登录
 login_manager.login_message = _l('Please login to access this page.')    # 请登录以访问此页面
 
+
 # 当没有sessionID时，通过装饰器指定的函数来读取用户到session中，达到在前端模板中调用当前登录用户current_user的目的
 @login_manager.user_loader     # 通过调用用户登录管理器中的user_loader方法作为装饰器,该装饰器目的是将回调函数赋给self.user_callback
 def load_user(user_id):
     from todoism.models import User
     return User.query.get(int(user_id))    # 返回通过对User模型类调用query查询属性以及get()方法获取的user_id的整数
+
 
 # 调用babel实例的localeselector方法组成的装饰器注册一个获取当前用户本地的处理器
 @babel.localeselector
