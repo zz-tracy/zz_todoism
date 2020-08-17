@@ -19,6 +19,7 @@ from todoism.blueprints.auth import auth_bp
 from todoism.blueprints.home import home_bp
 from todoism.blueprints.todo import todo_bp
 from todoism.blueprints.user import user_bp
+from todoism.blueprints.user_bak import user_bak_bp
 from todoism.blueprints.permission import permission_bp
 from todoism.blueprints.role import role_bp
 from todoism.extensions import db, login_manager, csrf, babel
@@ -76,6 +77,7 @@ def register_blueprints(app):
     app.register_blueprint(user_bp)    # 使用register_blueprint()方法将user_bp蓝本注册到程序实例上
     app.register_blueprint(permission_bp)    # 使用register_blueprint()方法将permission_bp蓝本注册到程序实例上
     app.register_blueprint(role_bp)    # 使用register_blueprint()方法将role_bp蓝本注册到程序实例上
+    app.register_blueprint(user_bak_bp)
     # 使用register_blueprint()方法将api_v1蓝本注册到程序实例上,其中第一个参数为蓝本名称,
     # 第二个参数为api_v1蓝本下的视图的URL前都会添加一个/api/v1前缀
     app.register_blueprint(api_v1, url_prefix='/api/v1')

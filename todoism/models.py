@@ -54,6 +54,8 @@ class SysUser(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True, comment='主键')
     # 性别
     gender = db.Column(db.String(5), nullable=False, comment='性别')
+    # 年龄
+    age = db.Column(db.Integer, comment='年龄')
     # 所属用户组
     user_group_id = db.Column(db.Integer, nullable=False, comment='所属用户组')
     # 用户名
